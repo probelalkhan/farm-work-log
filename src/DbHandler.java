@@ -19,9 +19,9 @@ public class DbHandler {
     public List<FarmingStat> getFarmingStats() {
         List<FarmingStat> farmingStats = new ArrayList<>();
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName(Config.DB_DRIVER);
             Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/zak", "root", "");
+                    Config.DB_HOST+":"+ Config.DB_PORT + "/"+Config.DB_NAME, Config.DB_USER, Config.DB_PASSWORD);
 
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM farmingstat");
@@ -62,9 +62,10 @@ public class DbHandler {
     public List<WorkDiary> getWorkDiaries() {
         List<WorkDiary> workDiaries = new ArrayList<>();
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName(Config.DB_DRIVER);
             Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/zak", "root", "");
+                    Config.DB_HOST+":"+ Config.DB_PORT + "/"+Config.DB_NAME, Config.DB_USER, Config.DB_PASSWORD);
+
 
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM workdiary");
