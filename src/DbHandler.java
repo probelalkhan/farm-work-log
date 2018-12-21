@@ -19,11 +19,7 @@ public class DbHandler {
     public List<FarmingStat> getFarmingStats() {
         List<FarmingStat> farmingStats = new ArrayList<>();
         try {
-            Class.forName(Config.DB_DRIVER);
-            Connection con = DriverManager.getConnection(
-                    Config.DB_HOST+":"+ Config.DB_PORT + "/"+Config.DB_NAME, Config.DB_USER, Config.DB_PASSWORD);
-
-            Statement stmt = con.createStatement();
+            Statement stmt = DbConnect.getInstance().getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM farmingstat");
             while (rs.next()) {
 
@@ -51,7 +47,7 @@ public class DbHandler {
                 );
                 farmingStats.add(fs);
             }
-            con.close();
+            DbConnect.getInstance().getConnection().close();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -62,12 +58,7 @@ public class DbHandler {
     public List<WorkDiary> getWorkDiaries() {
         List<WorkDiary> workDiaries = new ArrayList<>();
         try {
-            Class.forName(Config.DB_DRIVER);
-            Connection con = DriverManager.getConnection(
-                    Config.DB_HOST+":"+ Config.DB_PORT + "/"+Config.DB_NAME, Config.DB_USER, Config.DB_PASSWORD);
-
-
-            Statement stmt = con.createStatement();
+            Statement stmt = DbConnect.getInstance().getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM workdiary");
             while (rs.next()) {
 
@@ -87,7 +78,7 @@ public class DbHandler {
                 );
                 workDiaries.add(wd);
             }
-            con.close();
+            DbConnect.getInstance().getConnection().close();
         } catch (Exception e) {
             System.out.println(e);
         }
