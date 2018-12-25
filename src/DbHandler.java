@@ -1,9 +1,6 @@
 import com.sun.corba.se.spi.orbutil.threadpool.Work;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,11 +52,56 @@ public class DbHandler {
         return farmingStats;
     }
 
-    public List<WorkDiary> getWorkDiaries() {
+
+    public boolean saveWorkDiary(WorkDiary wd) {
+        int result = 0;
+        try {
+            Statement stmt = DbConnect.getInstance().getConnection().createStatement();
+            result = stmt.executeUpdate("INSERT INTO `workdiary` \n" +
+                    "            (`id`, \n" +
+                    "             `hous_name`, \n" +
+                    "             `workdiary`, \n" +
+                    "             `work_time`, \n" +
+                    "             `work_man`, \n" +
+                    "             `work_empl`, \n" +
+                    "             `work_cont1`, \n" +
+                    "             `work_cont2`, \n" +
+                    "             `work_cont3`, \n" +
+                    "             `work_cont4`, \n" +
+                    "             `work_cont5`, \n" +
+                    "             `work_contetc`) \n" +
+                    "VALUES      (NULL, \n" +
+                    "             '" + wd.getHous_Name() + "', \n" +
+                    "             '" + wd.getWorkDiary() + "', \n" +
+                    "             '" + wd.getWork_time() + "', \n" +
+                    "             '" + wd.getWork_man() + "', \n" +
+                    "             '" + wd.getWork_empl() + "', \n" +
+                    "             '" + wd.getWork_cont1() + "', \n" +
+                    "             '" + wd.getWork_cont2() + "', \n" +
+                    "             '" + wd.getWork_cont3() + "', \n" +
+                    "             '" + wd.getWork_cont4() + "', \n" +
+                    "             '" + wd.getWork_cont5() + "', \n" +
+                    "             '" + wd.getWork_contetc() + "');");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return result > 0;
+    }
+
+
+    public List<WorkDiary> getWorkDiaries(String date) {
+
+        String sql = "SELECT * FROM workdiary";
+
+        if (date != null) {
+            sql = "SELECT * FROM workdiary WHERE WorkDiary = '" + date + "'";
+        }
+
         List<WorkDiary> workDiaries = new ArrayList<>();
         try {
             Statement stmt = DbConnect.getInstance().getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM workdiary");
+            ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
 
                 WorkDiary wd = new WorkDiary(

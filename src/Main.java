@@ -106,19 +106,18 @@ public class Main extends JFrame {
         btnInputs.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 model.addRow(Work_Data);
-/*			   String[] sRow= new String[35];
-			   for(int j= 0; j<100; j++) {
-				   for(int i=0; i< 35; i++) {
-					   sRow[i]= String.format("%d", i+j);
-				   }
-				   model.addRow(sRow);
-			   }
-//			   InputtoFarm();
-//				setContentPane(contentPane);
-*/
             }
         });
-//
+
+        btnInputs.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String date = WorkDay.getText();
+                UiHandler.getInstance().displayWorkDiary((DefaultTableModel) table.getModel(), date);
+            }
+        });
+
+        //
         JLabel lcompany = new JLabel("Copy right to --- Sein Tech Co., Ltd. (TEL : +82-033-823-9509, FAX : +82-033-823-9609, Home Page : //www.sein-tech.co.kr");
         lcompany.setBorder(new LineBorder(new Color(0, 0, 0)));                            //
         lcompany.setFont(new Font("±¼¸²", Font.BOLD | Font.ITALIC, 12));                    //
@@ -190,26 +189,7 @@ public class Main extends JFrame {
         contentPane.add(panel0);
 
 
-        /*
-         * Filling the Table
-         * */
-        List<WorkDiary> workDiaries = DbHandler.getInstance().getWorkDiaries();
-
-        for (WorkDiary wd : workDiaries) {
-            ((DefaultTableModel) table.getModel()).addRow(new Object[]{
-                    wd.getHous_Name(),
-                    wd.getWorkDiary(), //we don't have any work date in database
-                    wd.getWork_time(),
-                    wd.getWork_man(),
-                    wd.getWork_empl(),
-                    wd.getWork_cont1(),
-                    wd.getWork_cont2(),
-                    wd.getWork_cont3(),
-                    wd.getWork_cont4(),
-                    wd.getWork_cont5(),
-                    wd.getWork_contetc()
-            });
-        }
+        UiHandler.getInstance().displayWorkDiary((DefaultTableModel) table.getModel(), null);
 
 
 //Input Panel
@@ -341,46 +321,28 @@ public class Main extends JFrame {
         btnInput.setBounds(1360, 805, 120, 23);
         contentPane.add(btnInput);
 
-        btnInput.addActionListener(e -> {
-//			   Work_Data[0]= Hous_Name.getText();
-            Work_Data[1] = Work_Days.getText();
-            Work_Data[2] = Work_time.getText();
-            Work_Data[3] = Work_man.getText();
-            Work_Data[4] = Work_empl.getText();
-            Work_Data[5] = Work_cont1.getText();
-            Work_Data[6] = Work_cont2.getText();
-            Work_Data[7] = Work_cont3.getText();
-            Work_Data[8] = Work_cont4.getText();
-            Work_Data[9] = Work_cont5.getText();
-            Work_Data[10] = Work_contetc.getText();
-            for (int i = 0; i < 10; i++) {
-                System.out.println(Work_Data[i]);
-            }
-            String data = Work_Data[1];
-            if (Work_Data[0].equals("") || Work_Data[2].equals("")) {
-                JOptionPane.showMessageDialog(null, "ÇÏ¿ì½º ¼±ÅÃ, ÀÛ¾÷ÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä", "ÀÔ·Â ¿À·ù", JOptionPane.ERROR_MESSAGE);
-            } else {
-                Connection conn;
-                Statement stmt = null;
-                int rst = 0;
 
-                try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    conn = DriverManager.getConnection("jdbc.mysql://localhost:3306/WorkDiary", "root", "Sein0704");
-                    System.out.println("DB ¿¬°á ¿Ï·á");
-                    stmt = (Statement) conn.createStatement();
-                    ((Connection) stmt).close();
-                    conn.close();
-                } catch (ClassNotFoundException e1) {
-                    System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    System.out.println("DB ¿¬°á ½ÇÆÐ" + e1.getMessage());
-                }
-            }
-            add(btnInput);
-//				setContentPane(contentPane);
+        btnInput.addActionListener(e -> {
+            WorkDiary wd = new WorkDiary(
+                    0,
+                    HousName.getText(),
+                    Work_Days.getText(),
+                    Work_time.getText(),
+                    Work_man.getText(),
+                    Integer.parseInt(Work_empl.getText()),
+                    Work_cont1.getText(),
+                    Work_cont2.getText(),
+                    Work_cont3.getText(),
+                    Work_cont4.getText(),
+                    Work_cont5.getText(),
+                    Work_contetc.getText()
+            );
+
+            DbHandler.getInstance().saveWorkDiary(wd);
+
+            UiHandler.getInstance().displayWorkDiary((DefaultTableModel) table.getModel(), null);
         });
+
     }
 
     public void addCom_Title(JPanel p, GridBagConstraints g, Component c, int x, int y, int w, int h, Color cgb, Color cgf) {
